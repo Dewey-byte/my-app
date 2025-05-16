@@ -1,0 +1,6 @@
+Flask
+Flask-Cors
+flask-mysqldb        # or use the PyMySQL shim as discussed
+Flask-JWT-Extended
+Werkzeug
+PyMySQL               # if you’re using the PyMySQL shim
