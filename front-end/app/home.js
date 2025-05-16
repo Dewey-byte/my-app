@@ -40,7 +40,7 @@ export default function Home() {
     <LinearGradient colors={['#000000']} style={styles.container}>
         <Image source={require('../assets/logo.jpg')} style={styles.logo} />
 
-      <Text style={styles.heading}>DICK 👉🏾👌🏾</Text>
+      <Text style={styles.heading}>DICKHEAD 👉🏾👌🏾</Text>
       <Text style={styles.subheading}>Start your journey by logging in or signing up</Text>
 
       <Text style={{ color: '#fff', marginBottom: 20 }}>{backendMessage}</Text>
