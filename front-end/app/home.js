@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     
     // Fetch from backend
-    fetch('http://172.20.10.7:5000/') // Replace with your actual IP
+    fetch('http://192.168.254.104:5000/') // Replace with your actual IP
       .then((res) => res.json())
       .then((data) => {
         setBackendMessage(data.status);

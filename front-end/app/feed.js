@@ -11,7 +11,7 @@ export default function Feed() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://172.20.10.7:5000/posts');
+        const response = await fetch('http://192.168.254.104:5000/posts');
         const data = await response.json();
         setPosts(data);
       } catch (error) {
@@ -26,7 +26,7 @@ export default function Feed() {
   // Like/unlike handler
   const handleLike = async (postId) => {
     try {
-      await fetch(`http://172.20.10.7:5000/posts/like/${postId}`, { method: 'POST' });  // ← no space
+      await fetch(`http://192.168.254.104:5000/posts/like/${postId}`, { method: 'POST' });  // ← no space
       // Optimistically update UI
       setPosts(posts.map(p =>
         p.id === postId ? { ...p, likes: p.likes + 1 } : p

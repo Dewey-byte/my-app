@@ -16,7 +16,7 @@ export default function SplashScreen() {
   }, []);
 
   return (
-    <LinearGradient colors={['#000000']} style={styles.container}>
+    <LinearGradient colors={['#000000','#000000']} style={styles.container}>
       <Image source={require('../assets/logo.jpg')} style={styles.logo} />
       <Text style={styles.text}>DICK...</Text>
     </LinearGradient>
