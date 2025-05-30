@@ -15,7 +15,6 @@ export default function Feed() {
         const data = await response.json();
         setPosts(data);
       } catch (error) {
-        console.log('Fetched posts:', data);
         Alert.alert('Error', 'Could not load feed');
       }
     };
@@ -26,81 +25,96 @@ export default function Feed() {
   // Like/unlike handler
   const handleLike = async (postId) => {
     try {
-      await fetch(`http://192.168.254.104:5000/posts/like/${postId}`, { method: 'POST' });  // ← no space
+      await fetch(`http://192.168.254.104:5000/posts/like/${postId}`, { method: 'POST' });
       // Optimistically update UI
-      setPosts(posts.map(p =>
-        p.id === postId ? { ...p, likes: p.likes + 1 } : p
-      ));
-    } catch (err) {
-      console.error(err);
-      Alert.alert('Error', 'Could not like post');
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, likes: post.likes + 1 } : post
+        )
+      );
+    } catch (error) {
+      Alert.alert('Error', 'Could not like the post');
     }
   };
 
-  const renderPost = ({ item }) => (
-    <View style={styles.post}>
-      <Text style={styles.author}>{item.author || 'Unknown Author'}</Text>
-      {item.image ? (
-        <Image source={{ uri: item.image }} style={styles.image} />
-      ) : null}
-      <Text style={styles.content}>{item.content || 'No content available'}</Text>
-  
-      <TouchableOpacity onPress={() => handleLike(item.id)} style={styles.likeButton}>
-        <Text>❤️ {item.likes || 0} Likes</Text>
-      </TouchableOpacity>
-  
-      <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)}>
-        <Text style={styles.commentLink}>💬 View Comments</Text>
-      </TouchableOpacity>
-    </View>
-  );
-  
   return (
     <FlatList
       data={posts}
-      keyExtractor={item => item.id.toString()}
-      renderItem={renderPost}
-      contentContainerStyle={styles.list}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <View style={styles.post}>
+          <Text style={styles.author}>{item.author}</Text>
+          {item.image && (
+            <Image
+              source={{ uri: item.image }} // Use the image URL from the backend
+              style={styles.image}
+            />
+          )}
+          <Text style={styles.content}>{item.content}</Text>
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={() => handleLike(item.id)}>
+              <Text style={styles.likeButton}>❤️ {item.likes}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)}>
+              <Text style={styles.commentLink}>💬 Comment</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+      style={styles.container}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  list: {
+  container: {
+    backgroundColor: '#121212', // Dark background
+    flex: 1,
     padding: 10,
-    backgroundColor: '#00000',
   },
   post: {
-    padding: 15,
-    backgroundColor: '#fff',
-    marginBottom: 12,
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: '#1E1E1E', // Darker card background
     borderRadius: 8,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
   },
   author: {
     fontWeight: 'bold',
     marginBottom: 8,
     fontSize: 16,
+    color: '#FFFFFF', // White text for author
   },
   image: {
     width: '100%',
     height: 200,
     marginBottom: 12,
     borderRadius: 6,
+    resizeMode: 'cover',
   },
   content: {
     fontSize: 14,
     marginBottom: 12,
     lineHeight: 20,
+    color: '#E0E0E0', // Light gray text for content
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
   },
   likeButton: {
-    marginBottom: 10,
+    color: '#FF6B6B', // Red for the heart emoji
+    fontWeight: '500',
+    fontSize: 16,
   },
   commentLink: {
-    color: '#4e4eff',
+    color: '#4E9EFF', // Blue for the comment button
     fontWeight: '500',
+    fontSize: 16,
   },
 });
