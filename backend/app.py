@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-
+from flask import send_from_directory
 from db import init_db
 from routes.posts    import posts
 from routes.comments import comments
@@ -23,6 +23,10 @@ jwt = JWTManager(app)
 app.register_blueprint(posts)
 app.register_blueprint(comments)
 app.register_blueprint(users)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('uploads', filename)
 
 @app.route('/')
 def home():
