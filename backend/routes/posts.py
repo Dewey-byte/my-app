@@ -5,19 +5,20 @@ posts = Blueprint('posts', __name__)
 
 @posts.route('/posts', methods=['GET'])
 def get_all_posts():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, author, content, image, likes FROM posts ORDER BY id DESC")
-    rows = cur.fetchall()
-    cur.close()
-
-    posts = []
-    for row in rows:
-        posts.append({
-            'id': row[0],
-            'author': row[1],
-            'content': row[2],
-            'image': row[3],
-            'likes': row[4],
-        })
-    
+    posts = [
+        {
+            "id": 1,
+            "author": "John Doe",
+            "content": "This is a sample post.",
+            "image":"http://192.168.254.103:5000/uploads/cool.jpg",
+            "likes": 10
+        },
+        {
+            "id": 2,
+            "author": "Jane Smith",
+            "content": "Another post with an image.",
+            "image": "http://192.168.254.103:5000/uploads/cool.jpg",
+            "likes": 5
+        }
+    ]
     return jsonify(posts)

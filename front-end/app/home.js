@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity,  } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 
 
 export default function Home() {
-
   const [backendMessage, setBackendMessage] = useState('');
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    
     // Fetch from backend
-    fetch('http://192.168.254.104:5000/') // Replace with your actual IP
+    fetch('http://192.168.254.103:5000/') // Replace with your actual IP
       .then((res) => res.json())
       .then((data) => {
         setBackendMessage(data.status);
@@ -25,24 +22,17 @@ export default function Home() {
       });
   }, []);
 
-  
-  // Full-screen loading screen
   if (loading) {
     return (
-      <LinearGradient colors={['#00o000']} style={styles.loadingContainer}>
-       <Text style={{ color: '#fff', marginTop: 10 }}>Loading...</Text>
-      </LinearGradient>
+      <View style={styles.loadingContainer}>
+        <Text style={{ color: '#fff', marginTop: 10 }}>Loading...</Text>
+      </View>
     );
   }
 
-  // Main UI
   return (
-    <LinearGradient colors={['#000000']} style={styles.container}>
-        <Image source={require('../assets/logo.jpg')} style={styles.logo} />
-
-      <Text style={styles.heading}>DC</Text>
-      <Text style={styles.subheading}>Start your journey by logging in or signing up</Text>
-
+    <View style={styles.container}>
+      <Image source={require('../assets/logo.jpg')} style={styles.logo} />
       <Text style={{ color: '#fff', marginBottom: 20 }}>{backendMessage}</Text>
 
       <View style={styles.buttonContainer}>
@@ -58,7 +48,7 @@ export default function Home() {
           </TouchableOpacity>
         </Link>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -68,6 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 30,
+    backgroundColor: '#000000', // Solid black background
   },
   loadingContainer: {
     flex: 1,
@@ -75,50 +66,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 10,
+    width: 150,
+    height: 150,
     resizeMode: 'contain',
-  },
-  gif: {
-    width: 120,
-    height: 120,
-    marginBottom: -30,
-    resizeMode: 'contain',
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#fff',
-  },
-  subheading: {
-    fontSize: 14,
-    color: '#e0e0e0',
-    marginBottom: 10,
-    textAlign: 'center',
+    marginBottom: 20,
   },
   buttonContainer: {
-    backgroundColor: 'transparent',
-    padding: 10,
-    borderRadius: 5,
     width: '100%',
     alignItems: 'center',
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 8,
     backgroundColor: 'transparent',
+    padding: 15,
+    borderRadius: 8,
     alignItems: 'center',
     width: '100%',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#FFFFFF',
     fontWeight: 'bold',
-    textAlign: 'center',
+    fontSize: 16,
   },
 });

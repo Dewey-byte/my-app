@@ -48,7 +48,7 @@ export default function Feed() {
             <Text style={styles.author}>{item.author}</Text>
             {item.image && (
               <Image
-                source={{ uri: item.image }} // Use the image URL from the backend
+                source={{ uri:`http://192.168.254.103:5000/posts/${item.image}` }} // Use the image URL from the backend
                 style={styles.image}
               />
             )}
@@ -81,16 +81,12 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#1E1E1E', // Darker card background
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 2,
   },
   author: {
     fontWeight: 'bold',
     marginBottom: 8,
     fontSize: 16,
-    color: '#FFFFFF', // White text for author
+    color: '#FFFFFF',
   },
   image: {
     width: '100%',
@@ -103,21 +99,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 12,
     lineHeight: 20,
-    color: '#E0E0E0', // Light gray text for content
+    color: '#E0E0E0',
   },
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
   },
   likeButton: {
-    color: '#FF6B6B', // Red for the heart emoji
+    color: '#FF6B6B',
     fontWeight: '500',
     fontSize: 16,
   },
   commentLink: {
-    color: '#4E9EFF', // Blue for the comment button
+    color: '#4E9EFF',
     fontWeight: '500',
     fontSize: 16,
   },

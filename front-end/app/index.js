@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -16,10 +15,10 @@ export default function SplashScreen() {
   }, []);
 
   return (
-    <LinearGradient colors={['#000000','#000000']} style={styles.container}>
+    <View style={styles.container}>
       <Image source={require('../assets/logo.jpg')} style={styles.logo} />
       <Text style={styles.text}>DC...</Text>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -28,6 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#000000', // Solid black background
   },
   logo: {
     width: 150,
@@ -35,9 +35,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   text: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: 'bold',
     marginTop: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF', // White text
   },
 });
