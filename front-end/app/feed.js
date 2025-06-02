@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import BottomNavigation from '../components/BottomNavigation'; // Import BottomNavigation
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -11,7 +12,7 @@ export default function Feed() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://192.168.254.104:5000/posts');
+        const response = await fetch('http://192.168.254.103:5000/posts');
         const data = await response.json();
         setPosts(data);
       } catch (error) {
@@ -38,31 +39,34 @@ export default function Feed() {
   };
 
   return (
-    <FlatList
-      data={posts}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.post}>
-          <Text style={styles.author}>{item.author}</Text>
-          {item.image && (
-            <Image
-              source={{ uri: item.image }} // Use the image URL from the backend
-              style={styles.image}
-            />
-          )}
-          <Text style={styles.content}>{item.content}</Text>
-          <View style={styles.actions}>
-            <TouchableOpacity onPress={() => handleLike(item.id)}>
-              <Text style={styles.likeButton}>❤️ {item.likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)}>
-              <Text style={styles.commentLink}>💬 Comment</Text>
-            </TouchableOpacity>
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.post}>
+            <Text style={styles.author}>{item.author}</Text>
+            {item.image && (
+              <Image
+                source={{ uri: item.image }} // Use the image URL from the backend
+                style={styles.image}
+              />
+            )}
+            <Text style={styles.content}>{item.content}</Text>
+            <View style={styles.actions}>
+              <TouchableOpacity onPress={() => handleLike(item.id)}>
+                <Text style={styles.likeButton}>❤️ {item.likes}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)}>
+                <Text style={styles.commentLink}>💬 Comment</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      )}
-      style={styles.container}
-    />
+        )}
+        style={styles.container}
+      />
+      <BottomNavigation /> {/* Add BottomNavigation here */}
+    </View>
   );
 }
 

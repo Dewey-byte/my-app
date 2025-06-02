@@ -12,7 +12,7 @@ export default function LoginScreen() {
     if (!email || !password) {
       Alert.alert('Error', 'Please enter both email and password');
     } else {
-      fetch('http://192.168.254.104:5000/auth/login', {
+      fetch('http://192.168.254.103:5000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

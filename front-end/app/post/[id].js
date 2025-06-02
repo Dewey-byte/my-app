@@ -9,12 +9,12 @@ export default function PostDetail() {
   const [newComment, setNewComment] = useState('');
 
   useEffect(() => {
-    fetch(`http://192.168.254.104:5000/posts/${id}`)
+    fetch(`http://192.168.254.103:5000/posts/${id}`)
       .then(res => res.json())
       .then(setPost)
       .catch(console.error);
 
-    fetch(`http://192.168.254.104:5000/posts/${id}/comments`)
+    fetch(`http://192.168.254.103:5000/posts/${id}/comments`)
       .then(res => res.json())
       .then(setComments)
       .catch(console.error);
@@ -22,7 +22,7 @@ export default function PostDetail() {
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    fetch(`http://192.168.254.104:5000/posts/${id}/comment`, {
+    fetch(`http://192.168.254.103:5000/posts/${id}/comment`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

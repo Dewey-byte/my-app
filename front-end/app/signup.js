@@ -14,7 +14,7 @@ export default function SignUpScreen() {
       Alert.alert('Error', 'Please enter email and password');
     } else {
       // Send signup request to backend
-      fetch('http://192.168.254.104:5000/auth/signup', {
+      fetch('http://192.168.254.103:5000/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
