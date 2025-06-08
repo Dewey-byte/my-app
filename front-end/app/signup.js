@@ -1,11 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
-import { Link, useFocusEffect } from 'expo-router';
-import { useRouter } from 'expo-router';
-
-const router = useRouter();
+import { Link, useFocusEffect, useRouter } from 'expo-router';
 
 export default function SignUpScreen() {
+  const router = useRouter(); // ✅ moved inside
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,14 +11,13 @@ export default function SignUpScreen() {
     if (!email || !password) {
       Alert.alert('Error', 'Please enter email and password');
     } else {
-      // Send signup request to backend
       fetch('http://192.168.254.103:5000/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: email,  // Use the email as the username
+          username: email,
           password: password,
         }),
       })
@@ -46,12 +43,12 @@ export default function SignUpScreen() {
       setPassword('');
     }, [])
   );
+
   return (
     <View style={[styles.container, { backgroundColor: '#000000' }]}>
       <Image source={require('../assets/logo.jpg')} style={styles.logo} />
       <Text style={styles.title}>Sign Up</Text>
-    
-  
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -78,20 +75,3 @@ export default function SignUpScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#b01eff' },
-  logo: { width: 200, height: 200, alignSelf: 'center', marginBottom: -5 },
-  title: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
-  input: {
-    height: 50,
-    borderColor: '#ffff',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: '#A9A9A9',
-  },
-  loginLink: { marginTop: 20, alignItems: 'center' },
-  loginText: { color: '#ffff', fontWeight: 'bold' },
-});

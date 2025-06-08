@@ -2,9 +2,9 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 import { Link, useFocusEffect } from 'expo-router';
 import { useRouter } from 'expo-router';
-const router = useRouter();
-
 export default function LoginScreen() {
+  const router = useRouter(); 
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

@@ -10,7 +10,7 @@ import {
   Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Video } from 'expo-av';
+import { Video } from 'expo-video';
 
 export default function Reels() {
   const [videos, setVideos] = useState([]); // State to store uploaded videos

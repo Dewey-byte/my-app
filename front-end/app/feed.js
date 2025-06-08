@@ -48,7 +48,7 @@ export default function Feed() {
             <Text style={styles.author}>{item.author}</Text>
             {item.image && (
               <Image
-                source={{ uri:`http://192.168.254.103:5000/posts/${item.image}` }} // Use the image URL from the backend
+                source={{ uri:`http://192.168.254.103:5000/posts/${item.image}` }} 
                 style={styles.image}
               />
             )}
@@ -65,7 +65,7 @@ export default function Feed() {
         )}
         style={styles.container}
       />
-      <BottomNavigation /> {/* Add BottomNavigation here */}
+      <BottomNavigation /> 
     </View>
   );
 }
