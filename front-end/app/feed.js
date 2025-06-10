@@ -12,7 +12,7 @@ export default function Feed() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://192.168.254.103:5000/posts');
+        const response = await fetch('http://192.168.254.103:5000/posts'); // Replace with your backend URL
         const data = await response.json();
         setPosts(data);
       } catch (error) {
@@ -26,7 +26,7 @@ export default function Feed() {
   // Like/unlike handler
   const handleLike = async (postId) => {
     try {
-      await fetch(`http://192.168.254.104:5000/posts/like/${postId}`, { method: 'POST' });
+      await fetch(`http://192.168.254.103:5000/posts/like/${postId}`, { method: 'POST' });
       // Optimistically update UI
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -38,6 +38,8 @@ export default function Feed() {
     }
   };
 
+  // Sample posts can be fetched from the backend or used as initial data if needed
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -46,12 +48,10 @@ export default function Feed() {
         renderItem={({ item }) => (
           <View style={styles.post}>
             <Text style={styles.author}>{item.author}</Text>
-            {item.image && (
-              <Image
-                source={{ uri:`http://192.168.254.103:5000/posts/${item.image}` }} 
-                style={styles.image}
-              />
-            )}
+            <Image
+              source={{ uri: `${item.image}?t=${new Date().getTime()}` }} // Add a timestamp to bypass caching
+              style={styles.image}
+            />
             <Text style={styles.content}>{item.content}</Text>
             <View style={styles.actions}>
               <TouchableOpacity onPress={() => handleLike(item.id)}>
