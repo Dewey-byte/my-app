@@ -4,65 +4,43 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  Alert,
   FlatList,
-  Image,
+  TouchableOpacity,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { Video } from 'expo-video';
+import { Video } from 'expo-av';
 
 export default function Reels() {
-  const [videos, setVideos] = useState([]); // State to store uploaded videos
+  const [videos] = useState([
+    {
+      id: 1,
+      title: 'Nature Reel',
+      uri: 'https://www.w3schools.com/html/mov_bbb.mp4', // Static video URL
+    },
+    {
+      id: 2,
+      title: 'City Lights',
+      uri: 'https://www.w3schools.com/html/movie.mp4', // Static video URL
+    },
+    {
+      id: 3,
+      title: 'Ocean Waves',
+      uri: 'https://www.w3schools.com/html/mov_bbb.mp4', // Static video URL
+    },
+    {
+      id: 4,
+      title: 'Mountain View',
+      uri: 'https://www.w3schools.com/html/movie.mp4', // Static video URL
+    },
+    {
+      id: 5,
+      title: 'Forest Walk',
+      uri: 'https://www.w3schools.com/html/mov_bbb.mp4', // Static video URL
+    },
+  ]);
 
-  // Handle video selection and upload
-  const handleSelectVideo = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert('Permission Denied', 'You need to allow access to your media library.');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const selectedVideo = result.assets[0];
-
-      // Prepare the video for upload
-      const formData = new FormData();
-      formData.append('video', {
-        uri: selectedVideo.uri,
-        name: 'video.mp4',
-        type: 'video/mp4',
-      });
-
-      // Upload the video to the backend
-      fetch('http://192.168.254.103:5000/upload-video', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          Alert.alert('Success', 'Video uploaded successfully!');
-          setVideos((prevVideos) => [...prevVideos, selectedVideo]);
-        })
-        .catch((err) => {
-          console.error('Video upload error:', err);
-          Alert.alert('Error', 'Failed to upload video.');
-        });
-    }
-  };
-
-  // Render a single video item
   const renderVideoItem = ({ item }) => (
     <View style={styles.videoContainer}>
+      <Text style={styles.videoTitle}>{item.title}</Text>
       <Video
         source={{ uri: item.uri }}
         style={styles.video}
@@ -76,15 +54,10 @@ export default function Reels() {
     <View style={styles.container}>
       <Text style={styles.title}>Reels</Text>
 
-      {/* Upload Button */}
-      <TouchableOpacity onPress={handleSelectVideo} style={styles.uploadButton}>
-        <Text style={styles.uploadButtonText}>Upload Video</Text>
-      </TouchableOpacity>
-
-      {/* List of Uploaded Videos */}
+      {/* List of Static Videos */}
       <FlatList
         data={videos}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderVideoItem}
         contentContainerStyle={styles.videoList}
       />
@@ -105,18 +78,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  uploadButton: {
-    backgroundColor: '#4E9EFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  uploadButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   videoList: {
     paddingBottom: 20,
   },
@@ -124,10 +85,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     backgroundColor: '#1E1E1E',
     borderRadius: 8,
-    overflow: 'hidden',
+    padding: 10,
+  },
+  videoTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   video: {
     width: '100%',
     height: 200,
+    borderRadius: 8,
   },
 });
