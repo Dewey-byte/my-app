@@ -12,7 +12,7 @@ export default function Profile() {
   const [user] = useState({
     username: 'cd_fpv',
     bio: 'Photographer | Traveler | Dreamer',
-    profilePicture: 'https://via.placeholder.com/150',
+    profilePicture:'http://192.168.254.103:5000/uploads/cool.jpg',
     posts: 29,
     followers: 334,
     following: 230,
@@ -21,7 +21,7 @@ export default function Profile() {
   const [posts] = useState(
     Array.from({ length: 12 }).map((_, i) => ({
       id: i.toString(),
-      image: 'https://via.placeholder.com/150/5F5FFF/FFFFFF',
+      image: 'http://192.168.254.103:5000/uploads/cool.jpg',
     }))
   );
 
