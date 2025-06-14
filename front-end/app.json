@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "front-end",
+    "name": "D",
     "slug": "front-end",
     "scheme": "front-end",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -18,18 +18,28 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/adaptive-icon.jpg",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.frontend"
+      "package": "com.anonymous.frontend",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-audio",
-      "expo-video"
-    ]
+      "expo-video",
+      "expo-router"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4eb5b9ac-f824-4381-a4b2-0a89a568e3eb"
+      }
+    }
   }
 }
