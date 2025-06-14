@@ -1,39 +1,20 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, Button, Alert, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Link, useFocusEffect, useRouter } from 'expo-router';
 
 export default function SignUpScreen() {
-  const router = useRouter(); // ✅ moved inside
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
     if (!email || !password) {
+      // Show an error message if fields are empty
       Alert.alert('Error', 'Please enter email and password');
     } else {
-      fetch('http://192.168.254.103:5000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: email,
-          password: password,
-        }),
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === 'User registered successfully') {
-          Alert.alert('Success', 'Sign up successful!');
-          router.replace('/feed');
-        } else {
-          Alert.alert('Error', data.message || 'Signup failed');
-        }
-      })
-      .catch((err) => {
-        console.error('SignUp error:', err);
-        Alert.alert('Error', 'An error occurred during sign up');
-      });
+      // Navigate directly to the feed screen
+      Alert.alert('Success', 'Sign up successful!');
+      router.replace('/feed');
     }
   };
 
@@ -56,6 +37,7 @@ export default function SignUpScreen() {
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+        placeholderTextColor="#888"
       />
       <TextInput
         style={styles.input}
@@ -63,6 +45,7 @@ export default function SignUpScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        placeholderTextColor="#888"
       />
 
       <Button title="Sign Up" onPress={handleSignUp} />
@@ -75,3 +58,42 @@ export default function SignUpScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    borderRadius: 8,
+    color: '#FFFFFF',
+    backgroundColor: '#1E1E1E',
+  },
+  loginLink: {
+    marginTop: 20,
+  },
+  loginText: {
+    color: '#4E9EFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+});

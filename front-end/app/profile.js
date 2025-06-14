@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Image,
   FlatList,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-import BottomNavigation from '../components/BottomNavigation'; // Import BottomNavigation
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Profile() {
-  const [user] = useState({
+  const [user, setUser] = useState({
     username: 'cd_fpv',
     bio: 'Photographer | Traveler | Dreamer',
-    profilePicture:'http://192.168.254.103:5000/uploads/cool.jpg',
+    profilePicture: require('../assets/profile.jpg'),
     posts: 29,
     followers: 334,
     following: 230,
@@ -21,20 +23,52 @@ export default function Profile() {
   const [posts] = useState(
     Array.from({ length: 12 }).map((_, i) => ({
       id: i.toString(),
-      image: 'http://192.168.254.103:5000/uploads/cool.jpg',
+      image: require('../assets/cool.jpg'),
     }))
   );
 
+  // Request permission to access gallery
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'We need permission to access your gallery.');
+      }
+    })();
+  }, []);
+
+  const changeProfilePicture = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setUser((prev) => ({
+          ...prev,
+          profilePicture: { uri: result.assets[0].uri },
+        }));
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+    }
+  };
+
   const renderPostItem = ({ item }) => (
     <View style={styles.postContainer}>
-      <Image source={{ uri: item.image }} style={styles.postImage} />
+      <Image source={item.image} style={styles.postImage} />
     </View>
   );
 
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.profileInfo}>
-        <Image source={{ uri: user.profilePicture }} style={styles.avatar} />
+        <TouchableOpacity onPress={changeProfilePicture}>
+          <Image source={user.profilePicture} style={styles.avatar} />
+        </TouchableOpacity>
         <View style={styles.stats}>
           <View style={styles.stat}>
             <Text style={styles.statNumber}>{user.posts}</Text>
@@ -61,11 +95,10 @@ export default function Profile() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={renderPostItem}
-        numColumns={3} // Grid layout with 3 columns
-        ListHeaderComponent={renderHeader} // Render the profile header as the list header
+        ListHeaderComponent={renderHeader}
         contentContainerStyle={styles.postsContainer}
+        numColumns={3}
       />
-      <BottomNavigation />
     </View>
   );
 }
@@ -73,7 +106,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // Dark theme background
+    backgroundColor: '#121212',
   },
   header: {
     paddingVertical: 20,
@@ -84,13 +117,16 @@ const styles = StyleSheet.create({
   profileInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 16,
   },
   avatar: {
-    width: 86,
-    height: 86,
-    borderRadius: 43,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     marginRight: 16,
+    borderWidth: 2,
+    borderColor: '#4E9EFF',
   },
   stats: {
     flexDirection: 'row',
@@ -103,37 +139,36 @@ const styles = StyleSheet.create({
   statNumber: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 18,
-    marginTop: 70,
+    fontSize: 20,
   },
   statLabel: {
     color: '#ccc',
-    fontSize: 12,
-    
+    fontSize: 14,
   },
   username: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 20,
-    textAlign: 'left',
+    fontSize: 22,
+    textAlign: 'center',
     marginTop: 8,
   },
   bio: {
     color: '#ccc',
     fontSize: 14,
-    textAlign: 'left',
+    textAlign: 'center',
     marginTop: 4,
     marginBottom: 16,
   },
   postsContainer: {
-    paddingBottom: 40,
+    paddingBottom: 30,
   },
   postContainer: {
     flex: 1,
-    margin: 1, // Add spacing between grid items
+    margin: 1,
   },
   postImage: {
     width: '100%',
-    aspectRatio: 1, // Ensures the image is square
+    height: 120,
+    borderRadius: 8,
   },
 });

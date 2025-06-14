@@ -2,46 +2,23 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 import { Link, useFocusEffect } from 'expo-router';
 import { useRouter } from 'expo-router';
+
 export default function LoginScreen() {
   const router = useRouter(); 
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+ 
   const handleLogin = () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password');
+      Alert.alert('Error', 'Please enter email and password');
     } else {
-      fetch('http://192.168.254.103:5000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: email,
-          password: password,
-        }),
-      })
-      .then(async (res) => {
-        const contentType = res.headers.get("content-type");
-        const isJson = contentType && contentType.includes("application/json");
-        const data = isJson ? await res.json() : {};
-  
-        if (res.ok && data.access_token) {
-          Alert.alert('Success', 'Login successful!');
-          router.replace('/feed');
-        } else {
-          Alert.alert('Error', data.message || 'Invalid credentials or server error');
-        }
-      })
-      .catch((err) => {
-        console.log('Login response:', data);
-
-        Alert.alert('Error', 'An error occurred during login');
-      });
+      // Skip backend call and navigate directly to the feed
+      Alert.alert('Success', 'Login successful!');
+      router.replace('/feed');
     }
   };
-  
 
   useFocusEffect(
     useCallback(() => {
@@ -49,6 +26,8 @@ export default function LoginScreen() {
       setPassword('');
     }, [])
   );
+
+
 
   return (
     <View style={[styles.container, { backgroundColor: '#000000' }]}>
@@ -63,6 +42,7 @@ export default function LoginScreen() {
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+        placeholderTextColor="#888"
       />
       <TextInput
         style={styles.input}
@@ -70,6 +50,7 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        placeholderTextColor="#888"
       />
 
       <Button title="Log In" onPress={handleLogin} />
@@ -84,18 +65,40 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#b01eff' },
-  logo: { width: 200, height: 200, alignSelf: 'center', marginBottom: -5 },
-  title: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
-  input: {
-    height: 50,
-    borderColor: '#ffff',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: '#A9A9A9',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
-  signupLink: { marginTop: 20, alignItems: 'center' },
-  signupText: { color: '#fff', fontWeight: 'bold' },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    borderRadius: 8,
+    color: '#FFFFFF',
+    backgroundColor: '#1E1E1E',
+  },
+  signupLink: {
+    marginTop: 20,
+  },
+  signupText: {
+    color: '#4E9EFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });

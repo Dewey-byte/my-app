@@ -1,85 +1,293 @@
-// app/feed.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import BottomNavigation from '../components/BottomNavigation'; // Import BottomNavigation
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Feed() {
-  const [posts, setPosts] = useState([]);
-  const router = useRouter();
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      author: 'Dewey',
+      content: 'BSIT 2nd Year.',
+      image: require('../assets/bsit.jpg'),
+      likes: 10,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    },
+    {
+      id: 2,
+      author: 'KM',
+      content: 'Too much Hype',
+      image: require('../assets/rawr.png'),
+      likes: 5,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    },
+    {
+      id: 3,
+      author: 'Jase',
+      content: 'Eatwell',
+      image: require('../assets/eat.png'),
+      likes: 5,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    },
+    {
+      id: 4,
+      author: 'Sundy',
+      content: 'WTH.',
+      image: require('../assets/wth.png'),
+      likes: 5,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    },
+    {
+      id: 5,
+      author: 'Sherwin',
+      content: '^.^',
+      image: require('../assets/mf.jpg'),
+      likes: 5,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    },
+    {
+      id: 6,
+      author: 'KM',
+      content: 'Posy.',
+      image: require('../assets/posy.jpg'),
+      likes: 5,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    },
+  ]);
 
-  // Fetch all posts
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch('http://192.168.254.103:5000/posts'); // Replace with your backend URL
-        const data = await response.json();
-        setPosts(data);
-      } catch (error) {
-        Alert.alert('Error', 'Could not load feed');
-      }
-    };
+  const [newPostContent, setNewPostContent] = useState('');
+  const [newPostImage, setNewPostImage] = useState(null);
 
-    fetchPosts();
-  }, []);
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
 
-  // Like/unlike handler
-  const handleLike = async (postId) => {
-    try {
-      await fetch(`http://192.168.254.103:5000/posts/like/${postId}`, { method: 'POST' });
-      // Optimistically update UI
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post.id === postId ? { ...post, likes: post.likes + 1 } : post
-        )
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Could not like the post');
+    if (!result.canceled) {
+      setNewPostImage(result.assets[0].uri);
     }
   };
 
-  // Sample posts can be fetched from the backend or used as initial data if needed
+  const handleAddPost = () => {
+    if (!newPostContent.trim() && !newPostImage) {
+      Alert.alert('Error', 'Post must contain text or an image.');
+      return;
+    }
+
+    const newPost = {
+      id: posts.length + 1,
+      author: 'New User',
+      content: newPostContent,
+      image: newPostImage ? { uri: newPostImage } : null,
+      likes: 0,
+      liked: false,
+      showComments: false,
+      comments: [],
+      newComment: '',
+    };
+
+    setPosts([newPost, ...posts]);
+    setNewPostContent('');
+    setNewPostImage(null);
+  };
+
+  const handleLike = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              liked: !post.liked,
+              likes: post.liked ? post.likes - 1 : post.likes + 1,
+            }
+          : post
+      )
+    );
+  };
+
+  const toggleCommentSection = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? { ...post, showComments: !post.showComments }
+          : post
+      )
+    );
+  };
+
+  const handleCommentChange = (postId, text) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId ? { ...post, newComment: text } : post
+      )
+    );
+  };
+
+  const handleAddComment = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id === postId && post.newComment.trim()) {
+          return {
+            ...post,
+            comments: [...post.comments, post.newComment.trim()],
+            newComment: '',
+          };
+        }
+        return post;
+      })
+    );
+  };
+
+  const renderPostItem = ({ item }) => (
+    <View style={styles.post}>
+      <Text style={styles.author}>{item.author}</Text>
+      {item.image && (
+        <Image source={item.image} style={styles.image} />
+      )}
+      {item.content ? <Text style={styles.content}>{item.content}</Text> : null}
+      <View style={styles.actions}>
+        <TouchableOpacity onPress={() => handleLike(item.id)}>
+          <Text style={styles.likeButton}>
+            {item.liked ? '💖' : '🤍'} {item.likes}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => toggleCommentSection(item.id)}>
+          <Text style={styles.commentLink}>💬 Comment</Text>
+        </TouchableOpacity>
+      </View>
+
+      {item.showComments && (
+        <View style={styles.commentSection}>
+          {item.comments.map((comment, index) => (
+            <Text key={index} style={styles.commentText}>
+              💬 {comment}
+            </Text>
+          ))}
+          <View style={styles.commentInputRow}>
+            <TextInput
+              style={styles.commentInput}
+              placeholder="Add a comment..."
+              placeholderTextColor="#888"
+              value={item.newComment}
+              onChangeText={(text) => handleCommentChange(item.id, text)}
+            />
+            <TouchableOpacity
+              onPress={() => handleAddComment(item.id)}
+              style={styles.commentPostButton}
+            >
+              <Text style={styles.commentPostButtonText}>Post</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </View>
+  );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.post}>
-            <Text style={styles.author}>{item.author}</Text>
-            <Image
-              source={{ uri: `${item.image}?t=${new Date().getTime()}` }} // Add a timestamp to bypass caching
-              style={styles.image}
-            />
-            <Text style={styles.content}>{item.content}</Text>
-            <View style={styles.actions}>
-              <TouchableOpacity onPress={() => handleLike(item.id)}>
-                <Text style={styles.likeButton}>❤️ {item.likes}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)}>
-                <Text style={styles.commentLink}>💬 Comment</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        style={styles.container}
+        renderItem={renderPostItem}
+        contentContainerStyle={styles.feedContent}
       />
-      <BottomNavigation /> 
+
+      <View style={styles.newPostContainer}>
+        <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
+          <Text style={styles.imagePickerButtonText}>🖼️</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={styles.newPostInput}
+          placeholder="Write a new post..."
+          value={newPostContent}
+          onChangeText={setNewPostContent}
+          placeholderTextColor="#888"
+        />
+        <TouchableOpacity style={styles.addPostButton} onPress={handleAddPost}>
+          <Text style={styles.addPostButtonText}>Post</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#121212', // Dark background
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  feedContent: {
+    padding: 10,
+    paddingBottom: 100,
+  },
+  newPostContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#1E1E1E',
+    borderTopWidth: 1,
+    borderTopColor: '#333',
+    position: 'absolute',
+    bottom: 2,
+    width: '100%',
+  },
+  imagePickerButton: {
+    marginRight: 8,
+  },
+  imagePickerButtonText: {
+    fontSize: 22,
+    color: '#4E9EFF',
+  },
+  newPostInput: {
     flex: 1,
     padding: 10,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    borderRadius: 8,
+    color: '#FFFFFF',
+    backgroundColor: '#121212',
+    marginRight: 10,
+  },
+  addPostButton: {
+    backgroundColor: '#4E9EFF',
+    padding: 10,
+    borderRadius: 8,
+  },
+  addPostButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
   post: {
     marginBottom: 20,
     padding: 10,
-    backgroundColor: '#1E1E1E', // Darker card background
+    backgroundColor: '#1E1E1E',
     borderRadius: 8,
   },
   author: {
@@ -115,5 +323,38 @@ const styles = StyleSheet.create({
     color: '#4E9EFF',
     fontWeight: '500',
     fontSize: 16,
+  },
+  commentSection: {
+    marginTop: 10,
+  },
+  commentText: {
+    color: '#ccc',
+    marginBottom: 4,
+    fontSize: 14,
+  },
+  commentInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  commentInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 6,
+    padding: 8,
+    color: '#fff',
+    backgroundColor: '#121212',
+    marginRight: 10,
+  },
+  commentPostButton: {
+    backgroundColor: '#4E9EFF',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  commentPostButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
